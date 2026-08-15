@@ -40,6 +40,14 @@ Focused region comparison was not separately required: the normalized full-scree
 
 final result: passed
 
+## Fixed Mandarin voice
+
+- The reader is fixed to the `婷婷 / Ting-Ting` Mandarin voice when the device provides it.
+- Voice cycling and dialect alternatives were removed.
+- Devices without Ting-Ting fall back to their default Mandarin voice only.
+
+final result: passed
+
 ## Natural voice selection
 
 - Added a voice switcher that cycles through Chinese voices available on the user's device.

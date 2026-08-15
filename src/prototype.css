@@ -90,6 +90,8 @@
 .player-tools { height: 37px; margin-top: 7px; border-top: 1px solid #294151; display: grid; grid-template-columns: repeat(4, 1fr); align-items: end; }
 .player-tools button { border: 0; background: transparent; display: flex; align-items: center; justify-content: center; gap: 5px; color: #b4c3cb; font-size: 8px; }
 .player-tools button span { max-width: 58px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.player-tools .voice-fixed { display: flex; align-items: center; justify-content: center; gap: 5px; color: var(--mint); font-size: 8px; }
+.player-tools .voice-fixed svg { width: 13px; }
 .player-tools svg { width: 13px; }
 .player-tools b { font-size: 11px; color: var(--amber); }
 @media (max-height: 760px) { .player { bottom: 15px; } .tree-map, .original-text { padding-top: 146px; } }

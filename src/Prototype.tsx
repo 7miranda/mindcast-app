@@ -188,7 +188,6 @@ export default function Prototype() {
   const [view, setView] = useState<"map" | "text">("map");
   const [speed, setSpeed] = useState(1);
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
-  const [voiceIndex, setVoiceIndex] = useState(0);
   const [elapsed, setElapsed] = useState(0);
   const timerRef = useRef<number | null>(null);
 
@@ -215,10 +214,8 @@ export default function Prototype() {
   useEffect(() => {
     const loadVoices = () => {
       const available = window.speechSynthesis.getVoices()
-        .filter((voice) => /^zh|Chinese|中文|普通话/i.test(`${voice.lang} ${voice.name}`))
-        .sort((a, b) => Number(b.localService) - Number(a.localService));
+        .filter((voice) => /^(zh-CN|cmn)/i.test(voice.lang) || /婷婷|Ting-?Ting/i.test(voice.name));
       setVoices(available);
-      setVoiceIndex((current) => Math.min(current, Math.max(0, available.length - 1)));
     };
     loadVoices();
     window.speechSynthesis.addEventListener("voiceschanged", loadVoices);
@@ -259,7 +256,8 @@ export default function Prototype() {
       utterance.rate = speed;
       utterance.pitch = 0.92;
       utterance.volume = 1;
-      if (voices[voiceIndex]) utterance.voice = voices[voiceIndex];
+      const tingting = voices.find((voice) => /婷婷|Ting-?Ting/i.test(voice.name));
+      if (tingting) utterance.voice = tingting;
       utterance.onend = () => setPlaying(false);
       stopSpeech();
       window.speechSynthesis.speak(utterance);
@@ -275,12 +273,6 @@ export default function Prototype() {
   function cycleSpeed() {
     const next = speed === 1 ? 1.25 : speed === 1.25 ? 1.5 : speed === 1.5 ? 2 : 1;
     setSpeed(next);
-    if (playing) { stopSpeech(); setPlaying(false); }
-  }
-
-  function cycleVoice() {
-    if (!voices.length) return;
-    setVoiceIndex((current) => (current + 1) % voices.length);
     if (playing) { stopSpeech(); setPlaying(false); }
   }
 
@@ -331,7 +323,7 @@ export default function Prototype() {
         </div>
         <div className="player-tools">
           <button onClick={cycleSpeed}><b>{speed}x</b><span>倍速</span></button>
-          <button onClick={cycleVoice} title={voices[voiceIndex]?.name || "系统默认中文声音"}><SpeakerLoudIcon /><span>{voices[voiceIndex]?.name || "默认声音"}</span></button>
+          <div className="voice-fixed" title="固定使用普通话声音：婷婷"><SpeakerLoudIcon /><span>婷婷</span></div>
           <button onClick={() => { stopSpeech(); setPlaying(false); setElapsed(0); }}><Cross2Icon /><span>停止</span></button>
           <button onClick={() => setView(view === "map" ? "text" : "map")}><FileTextIcon /><span>{view === "map" ? "查看原文" : "返回导图"}</span></button>
         </div>
