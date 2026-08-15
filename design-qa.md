@@ -40,6 +40,15 @@ Focused region comparison was not separately required: the normalized full-scree
 
 final result: passed
 
+## Full source text and strict Mandarin playback
+
+- Every selected hierarchy node displays the complete source text of its full subtree.
+- Voice resolution happens at play time and accepts only `zh-CN` / `cmn-CN` voices.
+- If no Mandarin voice exists, playback stops instead of falling back to Cantonese.
+- Simulator chrome and cursor are removed globally from the published app.
+
+final result: passed
+
 ## Real-device mobile fixes
 
 - Real phones use a full-screen viewport without the desktop phone frame, device picker, camera, or simulated cursor.

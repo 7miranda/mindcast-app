@@ -120,10 +120,6 @@ function spokenText(node: TreeNode): string {
   return clean([node.title, ...node.body, ...node.children.map(spokenText)].join("\n"));
 }
 
-function directOriginalText(node: TreeNode): string {
-  return clean(node.body.length ? node.body.join("\n") : node.title);
-}
-
 function OriginalSection({ node, depth = 0 }: { node: TreeNode; depth?: number }) {
   return (
     <section className={`original-section original-depth-${Math.min(depth, 5)}`}>
@@ -160,7 +156,7 @@ function Branch({ nodes, path, selectedId, expanded, onSelect }: {
         {selectedId === node.id && (
           <div className="node-original-preview">
             <strong>原文</strong>
-            <p>{directOriginalText(node)}</p>
+            <p>{spokenText(node)}</p>
           </div>
         )}
         {open && node.children.length > 0 && (
@@ -186,7 +182,7 @@ export default function Prototype() {
   const [playing, setPlaying] = useState(false);
   const [view, setView] = useState<"map" | "text">("map");
   const [speed, setSpeed] = useState(1);
-  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
+  const [voiceNotice, setVoiceNotice] = useState("");
   const [elapsed, setElapsed] = useState(0);
   const timerRef = useRef<number | null>(null);
 
@@ -209,16 +205,6 @@ export default function Prototype() {
     fetch(asset("pasted-text.txt")).then((response) => response.text()).then(setRawText).catch(() => undefined);
     fetch(asset("cmb.txt")).then((response) => response.text()).then(setCmbText).catch(() => undefined);
     fetch(asset("cmb-image-supplement.txt")).then((response) => response.text()).then(setCmbImageText).catch(() => undefined);
-  }, []);
-  useEffect(() => {
-    const loadVoices = () => {
-      const available = window.speechSynthesis.getVoices()
-        .filter((voice) => /^(zh-CN|cmn-CN)/i.test(voice.lang));
-      setVoices(available);
-    };
-    loadVoices();
-    window.speechSynthesis.addEventListener("voiceschanged", loadVoices);
-    return () => window.speechSynthesis.removeEventListener("voiceschanged", loadVoices);
   }, []);
   useEffect(() => {
     const project = root.children.find((child) => child.title === "项目");
@@ -250,13 +236,21 @@ export default function Prototype() {
     if (playing) { window.speechSynthesis.pause(); setPlaying(false); return; }
     if (window.speechSynthesis.paused) window.speechSynthesis.resume();
     else {
+      const mandarinVoices = window.speechSynthesis.getVoices()
+        .filter((voice) => /^(zh-CN|cmn-CN)/i.test(voice.lang));
+      const mandarin = mandarinVoices.find((voice) => /婷婷|Ting-?Ting/i.test(voice.name)) || mandarinVoices[0];
+      if (!mandarin) {
+        setVoiceNotice("本机没有普通话声音，请先在系统设置中安装“婷婷”。");
+        setPlaying(false);
+        return;
+      }
       const utterance = new SpeechSynthesisUtterance(currentBody);
       utterance.lang = "zh-CN";
       utterance.rate = speed;
       utterance.pitch = 0.92;
       utterance.volume = 1;
-      const mandarin = voices.find((voice) => /婷婷|Ting-?Ting/i.test(voice.name)) || voices[0];
-      if (mandarin) utterance.voice = mandarin;
+      utterance.voice = mandarin;
+      setVoiceNotice(`普通话：${mandarin.name}`);
       utterance.onend = () => setPlaying(false);
       stopSpeech();
       window.speechSynthesis.speak(utterance);
@@ -311,6 +305,7 @@ export default function Prototype() {
       <section className="player" aria-label="朗读播放器">
         <div className="now-playing"><SpeakerLoudIcon /><span>当前节点</span><b>{selected.title}</b></div>
         <div className="track-title">{selected.children.length ? `包含 ${selected.children.length} 个子分支` : "叶子节点"}</div>
+        {voiceNotice && <div className="voice-notice">{voiceNotice}</div>}
         <input aria-label="播放进度" type="range" min="0" max={duration} value={elapsed} onChange={(event) => setElapsed(Number(event.target.value))} />
         <div className="times"><span>{fmt(elapsed)}</span><span>-{fmt(Math.max(0, duration - elapsed))}</span></div>
         <div className="transport">

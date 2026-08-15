@@ -78,6 +78,7 @@
 .now-playing svg { color: var(--mint); width: 13px; }
 .now-playing b { color: var(--amber); font-size: 9px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .track-title { font-weight: 700; font-size: 11px; margin: 10px 0 2px; color: #d9e4e9; }
+.voice-notice { margin: 4px 0; color: var(--mint); font-size: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .player input[type="range"] { width: 100%; height: 3px; accent-color: var(--amber); margin: 2px 0; }
 .times { display: flex; justify-content: space-between; color: var(--muted); font-size: 8px; }
 .transport { display: grid; grid-template-columns: repeat(5, 1fr); align-items: center; margin-top: 5px; }
@@ -109,3 +110,10 @@
   .tree-map, .original-text { padding-top: calc(124px + env(safe-area-inset-top)); padding-bottom: calc(330px + env(safe-area-inset-bottom)); }
   .player { bottom: max(10px, env(safe-area-inset-bottom)); }
 }
+
+/* Published app: remove the simulator shell and cursor on every device. */
+.phone-stage { position: fixed !important; inset: 0 !important; display: block !important; width: 100vw !important; height: 100dvh !important; padding: 0 !important; background: var(--night) !important; }
+.phone-scale-box, .phone-device, .device-screen { position: fixed !important; inset: 0 !important; width: 100vw !important; height: 100dvh !important; transform: none !important; border-radius: 0 !important; }
+.phone-bezel, .device-menu-bar, .mobile-cursor, .device-camera, .status-bar, .home-indicator, .keyboard-dock { display: none !important; }
+.device-screen, .device-screen * { cursor: auto !important; }
+.mobile-app-viewport { inset: 0 !important; bottom: 0 !important; }
