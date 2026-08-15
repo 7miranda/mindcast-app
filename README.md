@@ -1,1 +1,0 @@
-# Mindcast App
