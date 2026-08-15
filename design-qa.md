@@ -40,6 +40,15 @@ Focused region comparison was not separately required: the normalized full-scree
 
 final result: passed
 
+## Real-device mobile fixes
+
+- Real phones use a full-screen viewport without the desktop phone frame, device picker, camera, or simulated cursor.
+- Replaced simulated drag scrolling with native browser scrolling to remove reverse jumps.
+- Mandarin voice selection is restricted to `zh-CN` / `cmn-CN`; Cantonese voices cannot be selected.
+- Source-text panels remain in the normal document scroll flow.
+
+final result: passed
+
 ## Fixed Mandarin voice
 
 - The reader is fixed to the `婷婷 / Ting-Ting` Mandarin voice when the device provides it.

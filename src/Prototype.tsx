@@ -11,7 +11,6 @@ import {
   ReloadIcon,
   SpeakerLoudIcon,
 } from "@radix-ui/react-icons";
-import { MobileScroll } from "./mobile";
 
 type Tone = "yellow" | "orange" | "red" | "purple" | "plain";
 type TreeNode = { id: string; title: string; body: string[]; children: TreeNode[]; tone: Tone };
@@ -214,7 +213,7 @@ export default function Prototype() {
   useEffect(() => {
     const loadVoices = () => {
       const available = window.speechSynthesis.getVoices()
-        .filter((voice) => /^(zh-CN|cmn)/i.test(voice.lang) || /婷婷|Ting-?Ting/i.test(voice.name));
+        .filter((voice) => /^(zh-CN|cmn-CN)/i.test(voice.lang));
       setVoices(available);
     };
     loadVoices();
@@ -256,8 +255,8 @@ export default function Prototype() {
       utterance.rate = speed;
       utterance.pitch = 0.92;
       utterance.volume = 1;
-      const tingting = voices.find((voice) => /婷婷|Ting-?Ting/i.test(voice.name));
-      if (tingting) utterance.voice = tingting;
+      const mandarin = voices.find((voice) => /婷婷|Ting-?Ting/i.test(voice.name)) || voices[0];
+      if (mandarin) utterance.voice = mandarin;
       utterance.onend = () => setPlaying(false);
       stopSpeech();
       window.speechSynthesis.speak(utterance);
@@ -289,7 +288,7 @@ export default function Prototype() {
         <button className={view === "text" ? "active" : ""} onClick={() => setView("text")}><FileTextIcon />原文</button>
       </div>
 
-      <MobileScroll className="app-scroll">
+      <div className="app-scroll">
         {view === "map" ? (
           <main className="tree-map" aria-label="面试话术多层思维导图">
             <div className="tree-summary"><div><small>思维导图</small><h2>{root.title}</h2></div><span>{root.children.length} 个主分支<br />{allNodes.length} 个节点</span></div>
@@ -307,7 +306,7 @@ export default function Prototype() {
             <div className="scroll-spacer" />
           </main>
         )}
-      </MobileScroll>
+      </div>
 
       <section className="player" aria-label="朗读播放器">
         <div className="now-playing"><SpeakerLoudIcon /><span>当前节点</span><b>{selected.title}</b></div>

@@ -20,7 +20,7 @@
 .view-tabs { position: absolute; z-index: 7; top: 103px; left: 22px; padding: 3px; background: #0a1d2b; border: 1px solid var(--line); border-radius: 13px; display: flex; }
 .view-tabs button { border: 0; background: transparent; color: var(--muted); height: 32px; min-width: 70px; border-radius: 10px; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 5px; }
 .view-tabs button.active { background: #163d3f; color: #9ff6da; box-shadow: inset 0 0 0 1px #3e8f7c; }
-.app-scroll { height: 100%; }
+.app-scroll { position: absolute; inset: 0; height: 100%; overflow-x: hidden; overflow-y: auto; overscroll-behavior-y: contain; -webkit-overflow-scrolling: touch; }
 .tree-map, .original-text { padding: 154px 16px 330px; min-height: 100%; }
 .tree-summary { display: flex; align-items: flex-end; justify-content: space-between; padding: 0 3px 14px; border-bottom: 1px solid var(--line); }
 .tree-summary small { color: var(--mint); font-size: 9px; }
@@ -95,3 +95,17 @@
 .player-tools svg { width: 13px; }
 .player-tools b { font-size: 11px; color: var(--amber); }
 @media (max-height: 760px) { .player { bottom: 15px; } .tree-map, .original-text { padding-top: 146px; } }
+
+@media (max-width: 600px), (pointer: coarse) {
+  html, body, #root { width: 100%; height: 100%; height: 100dvh; overflow: hidden; background: var(--night); }
+  .phone-stage { position: fixed; inset: 0; display: block; width: 100vw; height: 100dvh; padding: 0; }
+  .phone-scale-box, .phone-device, .device-screen { position: fixed !important; inset: 0 !important; width: 100vw !important; height: 100dvh !important; transform: none !important; border-radius: 0 !important; }
+  .phone-bezel, .device-menu-bar, .mobile-cursor, .device-camera, .status-bar, .home-indicator { display: none !important; }
+  .device-screen, .device-screen * { cursor: auto !important; }
+  .mobile-app-viewport { inset: 0 !important; bottom: 0 !important; }
+  .app-shell { width: 100vw; height: 100dvh; }
+  .app-header { padding-top: max(18px, env(safe-area-inset-top)); height: calc(64px + env(safe-area-inset-top)); }
+  .view-tabs { top: calc(74px + env(safe-area-inset-top)); }
+  .tree-map, .original-text { padding-top: calc(124px + env(safe-area-inset-top)); padding-bottom: calc(330px + env(safe-area-inset-bottom)); }
+  .player { bottom: max(10px, env(safe-area-inset-bottom)); }
+}
